@@ -67,17 +67,15 @@ router.post('/', (req, res) => {
 
 // Update a tag's name by its ID
 router.put('/:id', (req, res) => {
-  Tag.update(req.body, {
-    where: {
-      id: req.params.id,
-    },
-    returning: true, // Ensure the updated tag is returned
-  })
-    .then(([rowsUpdated, [updatedTag]]) => {
-      if (rowsUpdated === 0) {
+  Tag.update(
+    { tag_name: req.body.tag_name }, // Pass the updated tag_name field
+    { where: { id: req.params.id } }
+  )
+    .then((updatedRows) => {
+      if (updatedRows[0] === 0) {
         return res.status(404).json({ message: 'No tag found with this id' });
       }
-      res.status(200).json(updatedTag);
+      res.status(200).json({ message: 'Tag updated successfully' });
     })
     .catch((err) => {
       console.error(err);
